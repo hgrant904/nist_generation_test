@@ -1,0 +1,84 @@
+# General
+.DS_Store
+.env
+*.env
+*.env.local
+*.log
+*.tmp
+*.swp
+*.swo
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+.coverage*
+htmlcov/
+.mypy_cache/
+.tox/
+.venv/
+venv/
+.local/
+.cache/
+
+# Node/Frontend
+node_modules/
+.next/
+.npm/
+yarn-error.log
+.pnp*
+coverage/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.iml
+
+# Docker
+**/.dockerignore
+.docker/
+.docker-compose*
+Dockerfile*
+
+# Alembic
+**/alembic/versions/__pycache__/
+
+# Poetry/Pipenv
+poetry.lock
+Pipfile.lock
+
+# Misc
+*.bak
+*.orig
+*.rej
+
+# SQLite/DB
+**/data/
+
+# Logs
+logs/
+**/logs/
+
+# Test artifacts
+junit.xml
+.pyre/
+
+# MacOS
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
