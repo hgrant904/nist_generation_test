@@ -22,6 +22,13 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
 *.manifest
 *.spec
 pip-log.txt
@@ -79,6 +86,37 @@ next-env.d.ts
 *~
 .DS_Store
 
+# Environment
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Logs
+*.log
+logs/
+
+# FastAPI
+.cache/
+
+# Model files
+*.gguf
+models/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
 # PostgreSQL
 *.sql.gz
 pgdata/
