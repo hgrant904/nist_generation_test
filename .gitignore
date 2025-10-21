@@ -26,6 +26,44 @@ MANIFEST
 *.spec
 pip-log.txt
 pip-delete-this-directory.txt
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+*.py,cover
+.hypothesis/
+coverage.xml
+*.coveragerc
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
 .tox/
 .nox/
 .coverage
@@ -67,6 +105,16 @@ next-env.d.ts
 # Environment variables
 .env
 .env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
 .env.development.local
 .env.test.local
 .env.production.local
@@ -91,6 +139,19 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+*~
+
+# Alembic
+alembic/versions/*_temp.py
+
+# Poetry
+poetry.lock
+
+# Distribution / packaging
+*.tar.gz
+*.whl
 
 # Testing
 .pytest_cache/
