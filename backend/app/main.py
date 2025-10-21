@@ -1,29 +1,32 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import os
+
+from app.api.router import api_router
+from app.core.config import get_settings
+
+settings = get_settings()
 
 app = FastAPI(
-    title="NIST Reports API",
-    description="API for automating NIST security report generation",
+    title=settings.app_name,
+    description="API for automating NIST Cybersecurity Framework assessments",
     version="0.1.0",
 )
 
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=settings.allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-@app.get("/")
-async def root():
-    return {"message": "NIST Reports API", "status": "running"}
+app.include_router(api_router)
 
 
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
+@app.get("/", tags=["health"])
+async def root() -> dict[str, str]:
+    return {
+        "service": settings.app_name,
+        "status": "running",
+        "environment": settings.app_env,
+    }

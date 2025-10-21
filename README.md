@@ -45,17 +45,29 @@ Before you begin, ensure you have the following installed:
 2. **Set up environment variables**
    ```bash
    cp .env.example .env
-   # Edit .env with your configuration (optional for development)
+   cp backend/.env.example backend/.env
+   # Edit the .env files as needed (defaults are suitable for local development)
    ```
 
-3. **Start the services**
+3. **Install and start Ollama locally**
+   - Install [Ollama](https://ollama.com/download) for your platform
+   - Pull the required model: `ollama pull llama3.1:8b`
+   - Ensure the Ollama API is running and reachable at `http://localhost:11434`
+
+4. **Start the services**
    ```bash
    make dev
    # Or without Make:
-   docker-compose up
+   docker compose up
    ```
 
-4. **Access the applications**
+5. **Apply migrations and seed the NIST CSF dataset**
+   ```bash
+   docker compose run --rm backend alembic upgrade head
+   docker compose run --rm backend python -m app.seeds.nist_csf
+   ```
+
+6. **Access the applications**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:8000
    - API Documentation: http://localhost:8000/docs
@@ -75,8 +87,12 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # Set up environment variables
-cp ../.env.example .env
+cp .env.example .env
 # Edit .env with your configuration
+
+# Run migrations and seed data
+alembic upgrade head
+python -m app.seeds.nist_csf
 
 # Start the backend server
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
@@ -148,11 +164,18 @@ make db-shell        # Open PostgreSQL shell
 The project uses environment variables for configuration. Copy `.env.example` to `.env` and customize:
 
 **Backend Configuration:**
+- `APP_ENV`: Application environment (`development`, `staging`, `production`)
+- `LOG_LEVEL`: Logging verbosity (`info`, `debug`, etc.)
 - `BACKEND_PORT`: Backend server port (default: 8000)
-- `DATABASE_URL`: PostgreSQL connection string
-- `DEBUG`: Enable debug mode (default: true)
-- `SECRET_KEY`: Application secret key
-- `ALLOWED_ORIGINS`: CORS allowed origins
+- `DATABASE_URL`: Async PostgreSQL connection string (`postgresql+asyncpg://`)
+- `SYNC_DATABASE_URL`: Synchronous connection string for tooling
+- `SECRET_KEY` / `JWT_SECRET`: Cryptographic secrets (set in production)
+- `ALLOWED_ORIGINS`: Comma-separated list for CORS
+- `LLM_PROVIDER`: Language model provider (`ollama`)
+- `OLLAMA_BASE_URL`: Ollama API endpoint (Windows-compatible default provided)
+- `OLLAMA_MODEL`: Default model to load (`llama3.1:8b`)
+- `OLLAMA_TEMPERATURE`: Generation temperature (0-1 range)
+- `OLLAMA_NUM_PREDICT`: Maximum tokens to generate per response
 
 **Frontend Configuration:**
 - `NEXT_PUBLIC_API_URL`: Backend API URL (default: http://localhost:8000)
@@ -191,6 +214,14 @@ Once the backend is running, you can access interactive API documentation:
 
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
+
+Key endpoints:
+- `GET /health` — service heartbeat
+- `POST /assessments` — start a new assessment session
+- `GET /assessments/{assessment_id}/next-question` — retrieve the next unanswered question
+- `POST /assessments/{assessment_id}/responses` — submit or update a response
+- `GET /assessments/{assessment_id}/progress` — view completion metrics
+- `POST /chat` — interact with the Ollama-powered assistant
 
 ## 🏗️ Technology Stack
 
@@ -254,7 +285,7 @@ All services are connected via a custom bridge network `nist-network`.
 - [x] Docker containerization
 - [x] Basic backend API structure
 - [x] Basic frontend structure
-- [ ] Database models and migrations
+- [x] Database models and migrations
 - [ ] Authentication system
 - [ ] NIST API integration
 - [ ] Report generation logic

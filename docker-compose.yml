@@ -25,16 +25,24 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: nist-reports-backend
+    env_file:
+      - ./backend/.env
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-nist_user}:${POSTGRES_PASSWORD:-change_me_in_production}@postgres:5432/${POSTGRES_DB:-nist_reports}
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=${POSTGRES_DB:-nist_reports}
-      - POSTGRES_USER=${POSTGRES_USER:-nist_user}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change_me_in_production}
-      - BACKEND_PORT=${BACKEND_PORT:-8000}
-      - DEBUG=${DEBUG:-true}
-      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000}
+      APP_ENV: ${APP_ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://nist_user:change_me_in_production@postgres:5432/nist_reports}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-nist_reports}
+      POSTGRES_USER: ${POSTGRES_USER:-nist_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_in_production}
+      BACKEND_PORT: ${BACKEND_PORT:-8000}
+      LLM_PROVIDER: ${LLM_PROVIDER:-ollama}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.1:8b}
+      OLLAMA_TEMPERATURE: ${OLLAMA_TEMPERATURE:-0.2}
+      OLLAMA_NUM_PREDICT: ${OLLAMA_NUM_PREDICT:-256}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000}
     ports:
       - "8000:8000"
     volumes:
