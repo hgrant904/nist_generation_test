@@ -7,6 +7,11 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 .Python
 build/
 develop-eggs/
@@ -37,6 +42,10 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
 .tox/
 .nox/
 .coverage
@@ -121,6 +130,42 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+*.log
+.pytest_cache/
+.mypy_cache/
+.pytype/
+.pyre/
+.ruff_cache/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+poetry.lock
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
+.next/
+out/
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+
+# Docker
+.dockerignore
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # IDEs
 .vscode/
@@ -133,7 +178,28 @@ dmypy.json
 *.db
 *.sqlite
 *.sqlite3
+.DS_Store
+
+# PostgreSQL
+*.sql.gz
+pgdata/
+postgres-data/
+
+# Logs
+logs/
+*.log
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Testing
+.pytest_cache/
+coverage/
+htmlcov/
+.coverage
+
+# Build artifacts
+dist/
+build/
+*.egg-info/

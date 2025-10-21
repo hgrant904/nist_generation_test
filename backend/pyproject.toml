@@ -1,0 +1,56 @@
+[tool.poetry]
+name = "nist-reports-backend"
+version = "0.1.0"
+description = "Backend service for NIST security report automation"
+authors = ["NIST Reports Team"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.104.0"
+uvicorn = {extras = ["standard"], version = "^0.24.0"}
+pydantic = "^2.4.0"
+pydantic-settings = "^2.0.0"
+sqlalchemy = "^2.0.0"
+alembic = "^1.12.0"
+psycopg2-binary = "^2.9.9"
+python-dotenv = "^1.0.0"
+python-multipart = "^0.0.6"
+httpx = "^0.25.0"
+aiofiles = "^23.2.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+pytest-cov = "^4.1.0"
+black = "^23.10.0"
+ruff = "^0.1.0"
+mypy = "^1.6.0"
+httpx = "^0.25.0"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "N", "W"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
