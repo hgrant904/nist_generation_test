@@ -26,11 +26,17 @@ pip install -r requirements.txt
 
 3. Set up environment variables:
 ```bash
-cp ../.env.example .env
+cp .env.example .env
 # Edit .env with your configuration
 ```
 
-4. Run the application:
+4. Apply database migrations and seed baseline data:
+```bash
+alembic upgrade head
+python -m app.seeds.nist_csf
+```
+
+5. Run the application:
 ```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
