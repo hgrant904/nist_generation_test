@@ -16,6 +16,17 @@ parts/
 sdist/
 var/
 wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
 pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
@@ -77,6 +88,23 @@ next-env.d.ts
 *.swp
 *.swo
 *~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Database
+*.db
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
 .DS_Store
 
 # PostgreSQL
