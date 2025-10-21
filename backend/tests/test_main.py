@@ -1,11 +1,16 @@
-"""Smoke tests for main application."""
+from fastapi.testclient import TestClient
+from app.main import app
 
-import pytest
-from httpx import AsyncClient
+client = TestClient(app)
 
 
-@pytest.mark.asyncio
-async def test_app_creates_successfully(client: AsyncClient) -> None:
-    """Test that the application can be created and responds."""
-    response = await client.get("/api/v1/health")
+def test_root():
+    response = client.get("/")
     assert response.status_code == 200
+    assert response.json()["status"] == "running"
+
+
+def test_health_check():
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "healthy"
