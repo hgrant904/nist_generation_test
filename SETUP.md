@@ -1,262 +1,288 @@
-# Setup Guide: NIST CSF Conversational Agent
+# Setup Checklist
 
-This guide walks you through setting up the Ollama-powered conversational agent from scratch.
+This document provides a comprehensive checklist for setting up the NIST Reports project.
 
-## Prerequisites
+## ✅ Prerequisites Checklist
 
-Before starting, ensure you have:
-- Python 3.9 or higher
-- 8GB+ RAM available
-- ~5GB free disk space for the model
-- Internet connection for downloading dependencies
+Before starting, ensure you have the following installed:
 
-## Step 1: Install Ollama
+- [ ] **Docker** (version 20.10+)
+  ```bash
+  docker --version
+  ```
 
-### macOS
-```bash
-brew install ollama
-```
+- [ ] **Docker Compose** (version 2.0+)
+  ```bash
+  docker-compose --version
+  ```
 
-### Linux
-```bash
-curl -fsSL https://ollama.ai/install.sh | sh
-```
+- [ ] **Git**
+  ```bash
+  git --version
+  ```
 
-### Windows
-Download the installer from [https://ollama.ai/download](https://ollama.ai/download)
+- [ ] **Make** (optional but recommended)
+  ```bash
+  make --version
+  ```
 
-## Step 2: Download the Model
+For local development without Docker:
 
-After installing Ollama, download the llama3.1:8b model:
+- [ ] **Node.js** (version 20+)
+  ```bash
+  node --version
+  ```
 
-```bash
-ollama pull llama3.1:8b
-```
+- [ ] **Python** (version 3.11+)
+  ```bash
+  python --version
+  ```
 
-This will download approximately 4.7GB. Wait for it to complete.
+- [ ] **PostgreSQL** (version 16+)
+  ```bash
+  psql --version
+  ```
 
-Verify the model is installed:
-```bash
-ollama list
-```
+## 🚀 Quick Setup (Docker - Recommended)
 
-You should see `llama3.1:8b` in the list.
+### Step 1: Clone and Navigate
 
-## Step 3: Start Ollama Service
-
-Start the Ollama service in a terminal:
-```bash
-ollama serve
-```
-
-Keep this terminal running. The service will be available at `http://localhost:11434`.
-
-To test if Ollama is working:
-```bash
-curl http://localhost:11434/api/tags
-```
-
-## Step 4: Set Up the Python Application
-
-### Clone the repository
 ```bash
 git clone <repository-url>
 cd nist_generation_test
 ```
 
-### Create a virtual environment
-```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+### Step 2: Environment Configuration
 
-### Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### Configure environment
 ```bash
 cp .env.example .env
+# Review and update .env if needed (optional for development)
 ```
 
-The default settings should work if Ollama is running on localhost:11434. If needed, edit `.env` to customize.
+### Step 3: Initialize Project
 
-## Step 5: Run the Application
-
-### Start the API server
+Option A - Using the initialization script:
 ```bash
-python run.py
+./scripts/init-project.sh
 ```
 
-Or with make:
+Option B - Manual setup:
 ```bash
-make run
-```
-
-You should see output like:
-```
-INFO:     Started server process [12345]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://0.0.0.0:8000
-```
-
-## Step 6: Test the Application
-
-### Option 1: Interactive API Docs
-Open your browser to [http://localhost:8000/docs](http://localhost:8000/docs)
-
-You'll see the Swagger UI where you can test all endpoints interactively.
-
-### Option 2: Health Check
-```bash
-curl http://localhost:8000/api/v1/health
-```
-
-Expected response:
-```json
-{
-  "status": "healthy",
-  "ollama_available": true,
-  "model_available": true,
-  "configured_model": "llama3.1:8b",
-  "available_models": ["llama3.1:8b"]
-}
-```
-
-### Option 3: Send a Chat Message
-```bash
-curl -X POST http://localhost:8000/api/v1/chat \
-  -H "Content-Type: application/json" \
-  -d '{
-    "session_id": "test-123",
-    "message": "Hello! I run a small business and need help with cybersecurity.",
-    "include_context": true
-  }'
-```
-
-### Option 4: Run the Example Script
-```bash
-python examples/chat_example.py
-```
-
-## Step 7: Run Tests
-
-### Run all tests
-```bash
-pytest
-```
-
-### Run only unit tests (no Ollama required)
-```bash
-pytest tests/unit/
-```
-
-### Run with coverage
-```bash
-pytest --cov=src --cov-report=html
-```
-
-Open `htmlcov/index.html` in your browser to view the coverage report.
-
-## Troubleshooting
-
-### "Cannot connect to Ollama"
-- Ensure `ollama serve` is running in a terminal
-- Check if port 11434 is available: `lsof -i :11434` (macOS/Linux)
-- Verify Ollama is responding: `curl http://localhost:11434/api/tags`
-
-### "Model not found"
-- Run `ollama list` to see installed models
-- Pull the model if missing: `ollama pull llama3.1:8b`
-- Check the model name in `.env` matches exactly
-
-### Slow responses
-- First response may be slow as the model loads into memory
-- Subsequent responses should be faster (2-5 seconds)
-- Reduce `OLLAMA_NUM_PREDICT` in `.env` for shorter responses
-
-### Port 8000 already in use
-- Change `API_PORT` in `.env` to another port (e.g., 8001)
-- Or find and stop the process using port 8000
-
-### Import errors
-- Ensure you activated the virtual environment
-- Reinstall dependencies: `pip install -r requirements.txt`
-
-## Docker Setup (Alternative)
-
-If you prefer Docker:
-
-```bash
-# Build the image
+# Build images
 docker-compose build
 
-# Start the service
-docker-compose up
+# Start services
+docker-compose up -d
+
+# Check health
+./scripts/health-check.sh
 ```
 
-Note: Ollama must still be running on your host machine.
+### Step 4: Verify Setup
 
-## Next Steps
+- [ ] Frontend accessible at http://localhost:3000
+- [ ] Backend accessible at http://localhost:8000
+- [ ] API docs accessible at http://localhost:8000/docs
+- [ ] Health endpoint returns 200: http://localhost:8000/health
 
-- Read the [README.md](README.md) for detailed API documentation
-- Explore the example script in `examples/chat_example.py`
-- Check out the system prompts in `src/prompts/system_prompts.py`
-- Customize the agent for your specific use case
+## 🔧 Local Setup (Without Docker)
 
-## Performance Tips
+### Backend Setup
 
-### Memory Management
-- The model uses ~8GB RAM when loaded
-- Close other memory-intensive applications
-- On systems with limited RAM, consider using a smaller model
+1. Navigate to backend directory:
+   ```bash
+   cd backend
+   ```
 
-### CPU Optimization
-- llama3.1:8b works well on modern CPUs
-- Response time: ~2-5 seconds on typical hardware
-- For faster responses, consider using a GPU-enabled setup
+2. Create virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-### Concurrent Users
-- The application handles concurrent requests via request queuing
-- Each user gets their own session with isolated conversation history
-- For high traffic, consider load balancing multiple instances
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## Support Resources
+4. Set up environment variables:
+   ```bash
+   cp ../.env.example .env
+   # Edit .env with your local configuration
+   ```
 
-- **Ollama Documentation**: https://ollama.ai/docs
-- **LangChain Documentation**: https://python.langchain.com
-- **FastAPI Documentation**: https://fastapi.tiangolo.com
-- **NIST CSF Reference**: https://www.nist.gov/cyberframework
+5. Ensure PostgreSQL is running and create database:
+   ```bash
+   createdb nist_reports
+   ```
 
-## Common Commands Reference
+6. Run the backend:
+   ```bash
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+7. Verify: http://localhost:8000/health
+
+### Frontend Setup
+
+1. Navigate to frontend directory:
+   ```bash
+   cd frontend
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   ```bash
+   cp ../.env.example .env.local
+   # Edit .env.local with your configuration
+   ```
+
+4. Run the frontend:
+   ```bash
+   npm run dev
+   ```
+
+5. Verify: http://localhost:3000
+
+## 🧪 Verify Installation
+
+Run these commands to verify everything is working:
 
 ```bash
-# Start Ollama
-ollama serve
+# Check all services
+make logs
 
-# List models
-ollama list
+# Run backend tests
+cd backend && pytest
 
-# Pull a model
-ollama pull llama3.1:8b
+# Run frontend type checking
+cd frontend && npm run type-check
 
-# Test Ollama
-curl http://localhost:11434/api/tags
+# Check API health
+curl http://localhost:8000/health
+```
 
-# Activate virtual environment
+Expected outputs:
+- [ ] All Docker containers are running
+- [ ] Backend tests pass
+- [ ] Frontend has no type errors
+- [ ] API health check returns `{"status": "healthy"}`
+
+## 🔍 Troubleshooting
+
+### Docker Issues
+
+**Port conflicts:**
+```bash
+# Check what's using the port
+lsof -i :8000  # or :3000, :5432
+
+# Stop conflicting service or change port in .env
+```
+
+**Permission issues:**
+```bash
+# Add user to docker group
+sudo usermod -aG docker $USER
+# Log out and back in
+```
+
+**Services not starting:**
+```bash
+# View logs
+docker-compose logs -f
+
+# Rebuild images
+docker-compose build --no-cache
+
+# Remove all containers and volumes
+docker-compose down -v
+```
+
+### Backend Issues
+
+**Import errors:**
+```bash
+# Ensure virtual environment is activated
 source venv/bin/activate
 
-# Install dependencies
-pip install -r requirements.txt
-
-# Run application
-python run.py
-
-# Run tests
-pytest
-
-# Clean up
-make clean
+# Reinstall dependencies
+pip install -r requirements.txt --upgrade
 ```
+
+**Database connection errors:**
+```bash
+# Check PostgreSQL is running
+docker-compose ps postgres
+
+# Check environment variables
+cat .env | grep POSTGRES
+```
+
+### Frontend Issues
+
+**Module not found:**
+```bash
+# Clear cache and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**Build errors:**
+```bash
+# Clear Next.js cache
+rm -rf .next
+
+# Rebuild
+npm run build
+```
+
+## 📚 Next Steps
+
+After successful setup:
+
+1. **Read the documentation:**
+   - [README.md](README.md) - Project overview
+   - [docs/development.md](docs/development.md) - Development guide
+   - [docs/architecture.md](docs/architecture.md) - System architecture
+   - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
+
+2. **Explore the API:**
+   - Visit http://localhost:8000/docs for interactive API documentation
+
+3. **Start developing:**
+   - Create a new branch: `git checkout -b feature/your-feature`
+   - Make your changes
+   - Run tests: `make test`
+   - Commit and push
+
+4. **Join the team:**
+   - Review open issues
+   - Check the project roadmap in README.md
+   - Reach out with questions
+
+## 🆘 Getting Help
+
+If you encounter issues not covered here:
+
+1. Check the [docs/development.md](docs/development.md) for common issues
+2. Search existing GitHub issues
+3. Create a new issue with:
+   - Your operating system
+   - Versions of Docker, Node, Python
+   - Steps to reproduce the problem
+   - Error messages and logs
+
+## ✨ Success!
+
+If you've completed all the steps above, you're ready to start developing! 🎉
+
+Access your applications:
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://localhost:8000
+- **API Documentation:** http://localhost:8000/docs
+- **ReDoc:** http://localhost:8000/redoc
